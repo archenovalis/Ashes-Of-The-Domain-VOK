@@ -23,12 +23,12 @@ public class Underworld extends BaseIndustry implements MarketImmigrationModifie
 
     public static float STABILITY_PELANTY = 5f;
 
-
     protected transient SubmarketAPI saved = null;
+
     public void apply() {
         super.apply(true);
         if (isFunctional() && market.isPlayerOwned()) {
-            if(!market.hasCondition(Conditions.ORGANIZED_CRIME)){
+            if (!market.hasCondition(Conditions.ORGANIZED_CRIME)) {
                 market.addCondition(Conditions.ORGANIZED_CRIME);
             }
             SubmarketAPI open = market.getSubmarket(Submarkets.SUBMARKET_BLACK);
@@ -46,15 +46,14 @@ public class Underworld extends BaseIndustry implements MarketImmigrationModifie
             market.removeSubmarket(Submarkets.SUBMARKET_BLACK);
         }
 
-        //modifyStabilityWithBaseMod();
+        // modifyStabilityWithBaseMod();
         market.getStability().modifyFlat(getModId(), -STABILITY_PELANTY, getNameForModifier());
 
         market.getIncomeMult().modifyPercent(getModId(0), BASE_BONUS, getNameForModifier());
-        if (!isFunctional()||!market.isFreePort()) {
+        if (!isFunctional() || !market.isFreePort()) {
             unapply();
         }
     }
-
 
     @Override
     public void unapply() {
@@ -68,24 +67,23 @@ public class Underworld extends BaseIndustry implements MarketImmigrationModifie
         }
 
         market.getStability().unmodifyFlat(getModId());
-        if(market.hasCondition(Conditions.ORGANIZED_CRIME)){
+        if (market.hasCondition(Conditions.ORGANIZED_CRIME)) {
             market.removeCondition(Conditions.ORGANIZED_CRIME);
         }
 
         market.getIncomeMult().unmodifyPercent(getModId(0));
     }
 
-
     protected void addStabilityPostDemandSection(TooltipMakerAPI tooltip, boolean hasDemand, IndustryTooltipMode mode) {
         Color h = Misc.getHighlightColor();
         float opad = 10f;
 
         float a = BASE_BONUS;
-        String aStr = "+" + (int)Math.round(a * 1f) + "%";
+        String aStr = "+" + (int) Math.round(a * 1f) + "%";
         tooltip.addPara("Colony income bonus: %s", opad, h, aStr);
 
         h = Misc.getNegativeHighlightColor();
-        tooltip.addPara("Stability penalty: %s", opad, h, "" + -(int)STABILITY_PELANTY);
+        tooltip.addPara("Stability penalty: %s", opad, h, "" + -(int) STABILITY_PELANTY);
     }
 
     @Override
@@ -107,18 +105,18 @@ public class Underworld extends BaseIndustry implements MarketImmigrationModifie
     }
 
     public boolean isAvailableToBuild() {
-        if(market.hasIndustry("kaysaarcapital_forbidden_city")){
+        if (market.hasIndustry("kaysaarcapital_forbidden_city")) {
             return false;
         }
-        if(market.hasIndustry("commerce")){
-            return false;
-        }
-        if(Global.getSettings().getModManager().isModEnabled("yunruindustries")){
-            if(market.hasIndustry("yunru_bazaar")){
+        // if(market.hasIndustry("commerce")){
+        // return false;
+        // }
+        if (Global.getSettings().getModManager().isModEnabled("yunruindustries")) {
+            if (market.hasIndustry("yunru_bazaar")) {
                 return false;
             }
         }
-        if(market.hasSpaceport()&&market.isFreePort()){
+        if (market.hasSpaceport() && market.isFreePort()) {
             return true;
         }
 
@@ -126,25 +124,29 @@ public class Underworld extends BaseIndustry implements MarketImmigrationModifie
     }
 
     public String getUnavailableReason() {
-        if(market.hasIndustry("kaysaarcapital_forbidden_city")){
-            return  "Requires a functional spaceport and enabled Free Port policy"+"Cannot be build due to Forbidden City being already established on this planet.";
+        if (market.hasIndustry("kaysaarcapital_forbidden_city")) {
+            return "Requires a functional spaceport and enabled Free Port policy"
+                    + "Cannot be build due to Forbidden City being already established on this planet.";
         }
-        if(market.hasIndustry("commerce")){
-            return  "Requires a functional spaceport and enabled Free Port policy"+"Cannot be build due to Independent trade being well established on this planet by the Commerce industry.";
-        }
-        if(Global.getSettings().getModManager().isModEnabled("yunruindustries")){
-            if(market.hasIndustry("yunru_bazaar")){
-                return  "Requires a functional spaceport and enabled Free Port policy"+"Cannot be build due, to Independent trade being well established on this planet by the Baazar.";
+        // if(market.hasIndustry("commerce")){
+        // return "Requires a functional spaceport and enabled Free Port policy"+"Cannot
+        // be build due to Independent trade being well established on this planet by
+        // the Commerce industry.";
+        // }
+        if (Global.getSettings().getModManager().isModEnabled("yunruindustries")) {
+            if (market.hasIndustry("yunru_bazaar")) {
+                return "Requires a functional spaceport and enabled Free Port policy"
+                        + "Cannot be build due, to Independent trade being well established on this planet by the Baazar.";
             }
         }
         return "Requires a functional spaceport and enabled Free Port policy.";
     }
 
-
-    //market.getIncomeMult().modifyMult(id, INCOME_MULT, "Industrial planning");
+    // market.getIncomeMult().modifyMult(id, INCOME_MULT, "Industrial planning");
     @Override
     protected void applyAlphaCoreModifiers() {
-        market.getIncomeMult().modifyPercent(getModId(1), ALPHA_CORE_BONUS, "Alpha core (" + getNameForModifier() + ")");
+        market.getIncomeMult().modifyPercent(getModId(1), ALPHA_CORE_BONUS,
+                "Alpha core (" + getNameForModifier() + ")");
     }
 
     @Override
@@ -172,20 +174,19 @@ public class Underworld extends BaseIndustry implements MarketImmigrationModifie
             CommoditySpecAPI coreSpec = Global.getSettings().getCommoditySpec(aiCoreId);
             TooltipMakerAPI text = tooltip.beginImageWithText(coreSpec.getIconName(), 48);
             text.addPara(pre + "Reduces upkeep costs by %s" +
-                            "Increases colony income by %s.", 0f, highlight,
-                    "" + (int)((1f - UPKEEP_MULT) * 100f) + "%", "" +
-                    str);
+                    "Increases colony income by %s.", 0f, highlight,
+                    "" + (int) ((1f - UPKEEP_MULT) * 100f) + "%", "" +
+                            str);
             tooltip.addImageWithText(opad);
             return;
         }
 
         tooltip.addPara(pre + "Reduces upkeep costs by %s" +
-                        "Increases colony income by %s.", opad, highlight,
-                "" + (int)((1f - UPKEEP_MULT) * 100f) + "%", "" +
-                str);
+                "Increases colony income by %s.", opad, highlight,
+                "" + (int) ((1f - UPKEEP_MULT) * 100f) + "%", "" +
+                        str);
 
     }
-
 
     @Override
     public boolean canImprove() {
@@ -201,13 +202,12 @@ public class Underworld extends BaseIndustry implements MarketImmigrationModifie
         }
     }
 
-
     public void addImproveDesc(TooltipMakerAPI info, ImprovementDescriptionMode mode) {
         float opad = 10f;
         Color highlight = Misc.getHighlightColor();
 
         float a = IMPROVE_BONUS;
-        String aStr = "" + (int)Math.round(a * 1f) + "%";
+        String aStr = "" + (int) Math.round(a * 1f) + "%";
 
         if (mode == ImprovementDescriptionMode.INDUSTRY_TOOLTIP) {
             info.addPara("Colony income increased by %s.", 0f, highlight, aStr);
